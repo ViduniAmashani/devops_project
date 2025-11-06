@@ -1,0 +1,98 @@
+/* Page container */
+.register-page {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Background image */
+.register-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Overlay (content holder) */
+.overlay {
+  text-align: center;
+  width: 100%;
+}
+
+/* Title styling */
+.title {
+  color: #d4ff00; /* Yellow-green (same as login) */
+  font-size: 34px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 6px #000;
+}
+
+/* Register box */
+.register-box {
+  background: #d9d9d9;
+  padding: 40px;
+  border-radius: 6px;
+  max-width: 650px;
+  margin: auto;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+  text-align: left;
+}
+
+/* Labels */
+.register-box label {
+  display: block;
+  font-weight: bold;
+  margin: 10px 0 5px;
+  font-size: 16px;
+}
+
+.required {
+  color: red;
+  margin-left: 4px;
+}
+
+/* Inputs */
+.register-box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  font-size: 14px;
+}
+
+/* Register button */
+.register-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff; /* Same blue as login button */
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.register-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Redirect text */
+.login-text {
+  margin-top: 15px;
+  text-align: center;
+  color: black;
+  font-size: 14px;
+  cursor: pointer; /* Optional if you want it to look clickable */
+}

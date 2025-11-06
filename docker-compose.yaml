@@ -1,0 +1,43 @@
+services:
+  frontend:
+    build: ./frontend
+    container_name: frontend_c
+    ports:
+      - '3000:3000'
+    environment:
+      - REACT_APP_API_URL=http://localhost:4000
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app   
+      - /app/node_modules
+    command: npm start  
+    
+
+  backend:
+    build: ./backend
+    container_name: backend_c
+    ports:
+      - '4000:4000'
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/blood_donation
+    depends_on:
+      - mongodb
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./backend:/app   # <-- mount local backend folder
+      - /app/node_modules  # <-- keep container's node_modules
+
+    command: npm run dev
+
+  mongodb:
+    image: mongo:7.0
+    container_name: blood_donation_db
+    ports:
+      - '27017:27017'
+    volumes:
+      - blood_donation_data:/data/db
+
+volumes:
+  blood_donation_data:
