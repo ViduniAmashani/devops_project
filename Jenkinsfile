@@ -2,54 +2,39 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'your-dockerhub-username/your-image-name:latest'  // your existing image
-        CONTAINER_NAME = 'blood_donation_app'
-        PORT = '5000' // change if your app uses another port
-    }
+    PROJECT_DIR = "/mnt/c/Users/Viduni/Desktop/Projects/devops_project"
+}
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                // Pull latest code from your Git repository
-                git branch: 'main', url: 'https://github.com/yourusername/your-repo.git'
+                echo "Pulling code from GitHub..."
+                checkout scm
             }
         }
 
-        stage('Pull Existing Docker Image') {
+        stage('Run Containers') {
             steps {
-                echo 'Pulling existing Docker image from Docker Hub...'
-                sh 'docker pull $DOCKER_IMAGE'
-            }
-        }
-
-        stage('Stop Old Container (if running)') {
-            steps {
-                script {
-                    sh '''
-                    if [ "$(docker ps -q -f name=$CONTAINER_NAME)" ]; then
-                        echo "Stopping and removing old container..."
-                        docker stop $CONTAINER_NAME
-                        docker rm $CONTAINER_NAME
-                    fi
-                    '''
+                dir("${PROJECT_DIR}") {
+                    
+                    sh 'docker compose up -d'
                 }
             }
         }
 
-        stage('Run Container from Pulled Image') {
+        stage('Check Running Containers') {
             steps {
-                echo 'Running container from existing Docker image...'
-                sh 'docker run -d -p $PORT:$PORT --name $CONTAINER_NAME $DOCKER_IMAGE'
+                sh 'docker ps'
             }
         }
     }
 
     post {
         success {
-            echo '✅ Deployment successful!'
+            echo '✅ Deployment successful! Your Docker Hub images are safe.'
         }
         failure {
-            echo '❌ Deployment failed. Check logs in Jenkins console.'
+            echo '❌ Deployment failed!'
         }
     }
 }
