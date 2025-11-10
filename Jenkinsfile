@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-    PROJECT_DIR = "/mnt/c/Users/Asus12/Desktop/Projects/BloodDonation"
+    PROJECT_DIR = "/mnt/c/Users/Asus12/Desktop/Projects/Blood_Donation"
 }
 
     stages {
