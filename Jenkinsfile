@@ -17,18 +17,22 @@ pipeline {
             }
         }
 
-        stage('Build and Tag Images') {
+        stage('Build Docker Images') {
             steps {
                 dir("${PROJECT_DIR}") {
                     echo "⚙️ Building Docker images..."
                     sh 'docker compose build'
-
-                    echo "🏷️ Tagging images for Docker Hub..."
-                    sh """
-                        docker tag ${FRONTEND_IMAGE}:latest ${DOCKER_HUB_USER}/${FRONTEND_IMAGE}:${IMAGE_TAG}
-                        docker tag ${BACKEND_IMAGE}:latest ${DOCKER_HUB_USER}/${BACKEND_IMAGE}:${IMAGE_TAG}
-                    """
                 }
+            }
+        }
+
+        stage('Tag Images for Docker Hub') {
+            steps {
+                echo "🏷️ Tagging images..."
+                sh """
+                    docker tag blood_donation-frontend:latest ${DOCKER_HUB_USER}/${FRONTEND_IMAGE}:${IMAGE_TAG}
+                    docker tag blood_donation-backend:latest ${DOCKER_HUB_USER}/${BACKEND_IMAGE}:${IMAGE_TAG}
+                """
             }
         }
 
