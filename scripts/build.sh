@@ -1,11 +1,9 @@
 #!/bin/bash
 set -e
 
-echo "🔨 Building Docker image..."
+echo "🔨 Building Docker images for frontend and backend..."
 
-IMAGE_NAME=my-app
-IMAGE_TAG=latest
+# Build images using docker-compose (will use Dockerfile in each folder)
+docker-compose -f docker-compose.yml build
 
-docker build -t $IMAGE_NAME:$IMAGE_TAG .
-
-echo "✅ Docker image built successfully"
+echo "✅ Docker images built successfully"

@@ -1,20 +1,15 @@
 #!/bin/bash
 set -e
 
-IMAGE_NAME=my-app
-IMAGE_TAG=latest
-CONTAINER_NAME=my-app-container
+echo "🚀 Deploying application with Docker Compose..."
 
-echo "🚀 Deploying container..."
+# Stop and remove any running containers
+docker-compose -f docker-compose.yml down || true
 
-# Stop old container if exists
-docker stop $CONTAINER_NAME || true
-docker rm $CONTAINER_NAME || true
+# Pull latest images from Docker Hub
+docker-compose -f docker-compose.yml pull || true
 
-# Run new container
-docker run -d \
-  --name $CONTAINER_NAME \
-  -p 80:80 \
-  $IMAGE_NAME:$IMAGE_TAG
+# Start services in detached mode
+docker-compose -f docker-compose.yml up -d --build
 
 echo "✅ Application deployed successfully"
