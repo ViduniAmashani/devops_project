@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USER = credentials('dockerhub-creds')   
+        DOCKER_USER = credentials('dockerhub-creds')  // Username with Password type
         AWS_KEY     = credentials('aws-access-key')    
         AWS_SECRET  = credentials('aws-secret-key')
     }
@@ -18,6 +18,7 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
+                // Make sure we are in the repo root
                 dir("${WORKSPACE}") {
                     sh 'chmod +x ./scripts/build.sh'
                     sh './scripts/build.sh'
@@ -29,6 +30,7 @@ pipeline {
             steps {
                 dir("${WORKSPACE}") {
                     sh 'chmod +x ./scripts/push.sh'
+                    // Pass username and password correctly
                     sh "./scripts/push.sh $DOCKER_USER_USR $DOCKER_USER_PSW"
                 }
             }
@@ -36,21 +38,9 @@ pipeline {
 
         stage('Deploy to AWS') {
             steps {
-                script {
-                    // Configure AWS CLI with credentials
-                    sh """
-                    aws configure set aws_access_key_id $AWS_KEY
-                    aws configure set aws_secret_access_key $AWS_SECRET
-                    aws configure set default.region us-east-1
-                    """
-
-                    // Example ECS deployment (update service)
-                    sh """
-                    aws ecs update-service \
-                        --cluster my-ecs-cluster \
-                        --service my-ecs-service \
-                        --force-new-deployment
-                    """
+                dir("${WORKSPACE}") {
+                    sh 'chmod +x ./scripts/deploy.sh'
+                    sh './scripts/deploy.sh'
                 }
             }
         }
@@ -64,6 +54,4 @@ pipeline {
             echo "Pipeline failed. Check Jenkins console for details."
         }
     }
-    //web hok check
-    
 }
