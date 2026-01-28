@@ -37,5 +37,3 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     console.error('❌ MongoDB connection failed:', err);
     process.exit(1);
   });
-// End of file
-// testing comment
