@@ -6,6 +6,13 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true },
 
+  // ✅ ADD THIS (for admin / user)
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
+
   // Profile fields
   age: { type: Number },
   gender: { type: String, enum: ['Male', 'Female', 'Other'] },

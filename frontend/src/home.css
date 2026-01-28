@@ -98,6 +98,29 @@
   margin-bottom: 10px;
 }
 
+/* Logout button styling */
+.logout-button {
+  background-color: #ff4d4d; /* red button */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #e60000; /* darker red on hover */
+  transform: scale(1.05); /* small grow effect */
+}
+
+.logout-button:active {
+  transform: scale(0.98); /* click effect */
+}
+
+
 /* Footer fixed at bottom */
 .footer {
   width: 100%;

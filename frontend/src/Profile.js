@@ -105,7 +105,7 @@ function Profile({ currentUser }) {
     <div className="profile-page">
       <nav className="navbar">
         <ul>
-          <li><Link to="/">Home</Link></li>
+          <li><Link to="/home">Home</Link></li>
           <li><Link to="/donate">Donate Blood</Link></li>
           <li><Link to="/request">Request Blood</Link></li>
           <li><Link to="/profile">Profile</Link></li>

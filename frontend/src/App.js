@@ -6,6 +6,7 @@ import Register from "./register"; // make sure path matches filename
 import DonateBlood from "./DonateBlood";
 import NeedBlood from "./NeedBlood";
 import Profile from "./Profile";
+import AdminDashboard from "./dashboard";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/donate" element={<DonateBlood />} />
         <Route path="/request" element={<NeedBlood />} />
         <Route path="/profile" element={<Profile/>}/>
+        <Route path="/dashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );

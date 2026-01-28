@@ -20,8 +20,9 @@ const NeedBlood = () => {
     console.log("Form submitted:", form);
 
     try {
+      // ✅ Updated URL to fetch only admin-accepted donors
       const response = await fetch(
-        `http://localhost:4000/api/donate/${form.bloodGroup}`
+        `http://localhost:4000/api/donate/accepted/${form.bloodGroup}`
       );
       const data = await response.json();
       setDonors(data);

@@ -15,15 +15,27 @@ function Login() {
       const response = await fetch("http://localhost:4000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }) // Send login data to backend
+        body: JSON.stringify({ email, password })
       });
 
       const data = await response.json();
 
       if (response.ok) {
         alert("Login successful!");
-        localStorage.setItem("token", data.token); // Save JWT token
-        navigate("/home"); // Navigate to home page
+
+        // Save JWT token
+        localStorage.setItem("token", data.token);
+
+        // ✅ Save role
+        localStorage.setItem("role", data.role);
+
+        // ✅ Role-based navigation
+        if (data.role === "admin") {
+          navigate("/dashboard");
+        } else {
+          navigate("/home");
+        }
+
       } else {
         alert(data.error || "Invalid email or password");
       }

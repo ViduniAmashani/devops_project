@@ -2,81 +2,66 @@ pipeline {
     agent any
 
     environment {
-        PROJECT_DIR = "/mnt/c/Users/Asus12/Desktop/Projects/Blood_Donation"
-        DOCKER_HUB_USER = "viduni2023"       
-        FRONTEND_IMAGE = "project-frontend"  
-        BACKEND_IMAGE = "project-backend"    
-        IMAGE_TAG = "latest"                
+        DOCKER_USER = credentials('dockerhub-creds')   
+        AWS_KEY     = credentials('aws-access-key')    
+        AWS_SECRET  = credentials('aws-secret-key')
     }
 
     stages {
-        stage('Checkout') {
+
+        stage('Checkout Code') {
             steps {
-                echo "📦 Pulling code from GitHub..."
-                checkout scm
+                // Pull repo into Jenkins workspace
+                git branch: 'main', url: 'https://github.com/ViduniAmashani/devops_project.git'
             }
         }
 
         stage('Build Docker Images') {
             steps {
-                dir("${PROJECT_DIR}") {
-                    echo "⚙️ Building Docker images..."
-                    sh 'docker compose build'
+                dir("${WORKSPACE}") {
+                    sh 'chmod +x ./scripts/build.sh'
+                    sh './scripts/build.sh'
                 }
             }
         }
 
-        stage('Tag Images for Docker Hub') {
+        stage('Push Docker Images') {
             steps {
-                echo "🏷️ Tagging images..."
-                sh """
-                    docker tag blood_donation-frontend:latest ${DOCKER_HUB_USER}/${FRONTEND_IMAGE}:${IMAGE_TAG}
-                    docker tag blood_donation-backend:latest ${DOCKER_HUB_USER}/${BACKEND_IMAGE}:${IMAGE_TAG}
-                """
+                dir("${WORKSPACE}") {
+                    sh 'chmod +x ./scripts/push.sh'
+                    sh "./scripts/push.sh $DOCKER_USER_USR $DOCKER_USER_PSW"
+                }
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Deploy to AWS') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                script {
+                    // Configure AWS CLI with credentials
                     sh """
-                        echo "🔐 Logging into Docker Hub..."
-                        echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
+                    aws configure set aws_access_key_id $AWS_KEY
+                    aws configure set aws_secret_access_key $AWS_SECRET
+                    aws configure set default.region us-east-1
+                    """
 
-                        echo "📤 Pushing frontend image..."
-                        docker push ${DOCKER_HUB_USER}/${FRONTEND_IMAGE}:${IMAGE_TAG}
-
-                        echo "📤 Pushing backend image..."
-                        docker push ${DOCKER_HUB_USER}/${BACKEND_IMAGE}:${IMAGE_TAG}
-
-                        docker logout
+                    // Example ECS deployment (update service)
+                    sh """
+                    aws ecs update-service \
+                        --cluster my-ecs-cluster \
+                        --service my-ecs-service \
+                        --force-new-deployment
                     """
                 }
-            }
-        }
-
-        stage('Run Containers') {
-            steps {
-                dir("${PROJECT_DIR}") {
-                    echo "🚀 Starting containers..."
-                    sh 'docker compose up -d'
-                }
-            }
-        }
-
-        stage('Check Running Containers') {
-            steps {
-                sh 'docker ps'
             }
         }
     }
 
     post {
         success {
-            echo '✅ Deployment successful! Images pushed to Docker Hub and containers running.'
+            echo "CI/CD pipeline completed successfully!"
         }
         failure {
-            echo '❌ Deployment failed!'
+            echo "Pipeline failed. Check Jenkins console for details."
         }
     }
 }

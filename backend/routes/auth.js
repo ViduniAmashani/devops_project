@@ -15,7 +15,15 @@ router.post('/register', async (req, res) => {
     }
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ name, password: hashed, email: email.toLowerCase() });
+
+    // Default role = 'user' (admin is manually created)
+    const user = new User({
+      name,
+      password: hashed,
+      email: email.toLowerCase(),
+      role: 'user'
+    });
+
     await user.save();
 
     res.status(201).json({ message: 'User registered successfully!' });
@@ -28,42 +36,34 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login user
+// Login user (supports admin too)
 router.post('/login', async (req, res) => {
   try {
     let { email, password } = req.body;
 
-    // Validate inputs
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    // Cleanup input
     email = email.trim().toLowerCase();
 
-    // Find user by email
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
 
-    // Check password
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
+    if (!isValid) return res.status(401).json({ error: 'Invalid credentials' });
 
-    // Generate JWT token
+    // Include role in JWT payload
     const token = jwt.sign(
-      { id: user._id, name: user.name, email: user.email },
+      { id: user._id, name: user.name, email: user.email, role: user.role },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
-    // Success response
     res.json({
       message: 'Login successful',
       token,
+      role: user.role, // ✅ important for frontend redirect
       user: { id: user._id, name: user.name, email: user.email }
     });
 
