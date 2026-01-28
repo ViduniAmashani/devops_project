@@ -2,6 +2,11 @@
 set -e
 
 echo "🚀 Deploying containers using Docker Compose..."
-docker compose -f "$PWD/docker-compose.yml" down
-docker compose -f "$PWD/docker-compose.yml" up -d
+
+# Go to project root
+cd "$(dirname "$0")/.."
+
+docker compose down
+docker compose up -d
+
 echo "✅ Application deployed successfully"
