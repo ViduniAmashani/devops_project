@@ -1,9 +1,10 @@
 #!/bin/bash
 set -e
 
-DOCKER_COMPOSE_FILE="${WORKSPACE}/docker-compose.yml"
+echo "🚀 Deploying containers using Docker Compose..."
 
-echo "🚀 Deploying containers..."
-docker compose -f "$DOCKER_COMPOSE_FILE" down
-docker compose -f "$DOCKER_COMPOSE_FILE" up -d
+# Stop existing containers and start new ones
+docker compose -f "$WORKSPACE/docker-compose.yml" down
+docker compose -f "$WORKSPACE/docker-compose.yml" up -d
+
 echo "✅ Application deployed successfully"

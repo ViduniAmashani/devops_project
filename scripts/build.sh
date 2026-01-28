@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-# Use workspace path
-DOCKER_COMPOSE_FILE="${WORKSPACE}/docker-compose.yml"
+echo "🔨 Building Docker images for frontend and backend..."
 
-echo "🔨 Building Docker images..."
-docker compose -f "$DOCKER_COMPOSE_FILE" build
+# Use the absolute path to docker-compose.yml
+docker compose -f "$WORKSPACE/docker-compose.yml" build
+
 echo "✅ Docker images built successfully"
