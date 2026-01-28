@@ -1,15 +1,10 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Deploying application with Docker Compose..."
+echo "🚀 Deploying containers using Docker Compose..."
 
-# Stop and remove any running containers
-docker-compose -f docker-compose.yml down || true
-
-# Pull latest images from Docker Hub
-docker-compose -f docker-compose.yml pull || true
-
-# Start services in detached mode
-docker-compose -f docker-compose.yml up -d --build
+# Stop and remove existing containers, then start new ones
+docker compose down
+docker compose up -d
 
 echo "✅ Application deployed successfully"
