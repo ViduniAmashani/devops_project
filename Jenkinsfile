@@ -19,28 +19,28 @@ pipeline {
         }
 
         stage('Terraform Init') {
-            steps {
-                dir('.') { // Run Terraform in project root
-                    sh 'terraform init'
-                }
-            }
+    steps {
+        dir('terraform') { // change to terraform folder
+            sh 'terraform init'
         }
+    }
+}
 
-        stage('Terraform Validate') {
-            steps {
-                dir('.') { // Run Terraform in project root
-                    sh 'terraform validate'
-                }
-            }
+stage('Terraform Validate') {
+    steps {
+        dir('terraform') {
+            sh 'terraform validate'
         }
+    }
+}
 
-        stage('Terraform Apply') {
-            steps {
-                dir('.') { // Run Terraform in project root
-                    sh 'terraform apply -auto-approve'
-                }
-            }
+stage('Terraform Apply') {
+    steps {
+        dir('terraform') {
+            sh 'terraform apply -auto-approve'
         }
+    }
+}
 
         stage('Build Docker Images') {
             steps {
