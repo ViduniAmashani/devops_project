@@ -57,11 +57,11 @@ pipeline {
         }
 
         stage('Deploy Containers') {
-            steps {
-                sh 'chmod +x scripts/deploy.sh'
-                sh './scripts/deploy.sh'
-            }
-        }
+    steps {
+        // Run your Ansible playbook
+        sh 'ansible-playbook -i ansible/inventory.ini ansible/deploy.yml'
+    }
+}
     }
 
     post {

@@ -1,0 +1,52 @@
+---
+- name: Deploy Blood Donation App
+  hosts: app_servers
+  become: yes
+
+  vars:
+    project_path: /home/ubuntu/blood_donation_app
+    docker_images:
+      - project-frontend
+      - project-backend
+
+  tasks:
+
+    - name: Ensure Docker is installed
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker Compose is installed
+      ansible.builtin.get_url:
+        url: https://github.com/docker/compose/releases/download/v2.21.0/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: Ensure project directory exists
+      ansible.builtin.file:
+        path: "{{ project_path }}"
+        state: directory
+
+    - name: Copy project files
+      ansible.builtin.copy:
+        src: .
+        dest: "{{ project_path }}"
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Remove old containers
+      community.docker.docker_container:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - backend_c
+        - frontend_c
+        - blood_donation_db
+
+    - name: Deploy containers with Docker Compose
+      community.docker.docker_compose:
+        project_src: "{{ project_path }}"
+        state: present
+        restarted: yes
