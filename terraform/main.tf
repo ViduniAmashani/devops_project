@@ -5,22 +5,13 @@ provider "aws" {
 resource "null_resource" "deploy_blood_donation_app" {
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update -y",
-      "sudo apt install docker.io -y",
-
-      # Stop old containers if running
       "docker stop backend_c || true",
       "docker rm backend_c || true",
       "docker stop frontend_c || true",
       "docker rm frontend_c || true",
-
-      # Run backend container
-      "docker run -d --restart unless-stopped -p 4000:4000 --name backend_c viduniamashani/project-backend:latest",
-
-      # Run frontend container
-      "docker run -d --restart unless-stopped -p 3000:3000 --name frontend_c --link backend_c:backend viduniamashani/project-frontend:latest"
+      "docker run -d --name backend_c viduni2023/project-backend:latest",
+      "docker run -d --name frontend_c -p 3000:3000 viduni2023/project-frontend:latest"
     ]
-
     connection {
       type        = "ssh"
       user        = "ubuntu"
