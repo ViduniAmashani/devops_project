@@ -14,13 +14,13 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main',
-                url: 'https://github.com/ViduniAmashani/devops_project.git'
+                    url: 'https://github.com/ViduniAmashani/devops_project.git'
             }
         }
 
         stage('Terraform Init') {
             steps {
-                dir('terraform') {
+                dir('.') { // Run Terraform in project root
                     sh 'terraform init'
                 }
             }
@@ -28,7 +28,7 @@ pipeline {
 
         stage('Terraform Validate') {
             steps {
-                dir('terraform') {
+                dir('.') { // Run Terraform in project root
                     sh 'terraform validate'
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir('terraform') {
+                dir('.') { // Run Terraform in project root
                     sh 'terraform apply -auto-approve'
                 }
             }
