@@ -57,18 +57,14 @@ pipeline {
         }
 
       stage('Deploy Containers') {
-    steps {
-            withCredentials([file(credentialsId: 'VSERVER_KEY', variable: 'VSERVER_KEY_PATH')]) {
+   steps {
         sh """
             ansible-playbook \
             -i ansible/inventory.ini \
             ansible/deploy.yml \
-            --private-key $VSERVER_KEY_PATH \
             -u ubuntu \
             -e 'ansible_python_interpreter=/usr/bin/python3'
         """
-    }
-
     }
 }
 
