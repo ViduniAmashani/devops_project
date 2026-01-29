@@ -56,11 +56,14 @@ pipeline {
             }
         }
 
-       stage('Deploy Containers') {
-    withCredentials([file(credentialsId: 'VSERVER_KEY', variable: 'VSERVER_KEY_PATH')]) {
-        sh "ansible-playbook -i ansible/inventory.ini ansible/deploy.yml --private-key $VSERVER_KEY_PATH"
+      stage('Deploy Containers') {
+    steps {
+        withCredentials([file(credentialsId: 'VSERVER_KEY', variable: 'VSERVER_KEY_PATH')]) {
+            sh "ansible-playbook -i ansible/inventory.ini ansible/deploy.yml --private-key $VSERVER_KEY_PATH"
+        }
     }
 }
+
 
     }
 
