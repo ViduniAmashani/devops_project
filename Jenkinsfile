@@ -20,7 +20,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('.') { // Run Terraform in project root
+                dir('terraform') {   // <-- run in terraform folder
                     sh 'terraform init'
                 }
             }
@@ -28,7 +28,7 @@ pipeline {
 
         stage('Terraform Validate') {
             steps {
-                dir('.') { // Run Terraform in project root
+                dir('terraform') {
                     sh 'terraform validate'
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir('.') { // Run Terraform in project root
+                dir('terraform') {
                     sh 'terraform apply -auto-approve'
                 }
             }
@@ -73,4 +73,3 @@ pipeline {
         }
     }
 }
-// End of Jenkinsfile

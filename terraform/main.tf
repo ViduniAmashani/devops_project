@@ -5,7 +5,7 @@ provider "aws" {
 resource "null_resource" "deploy_blood_donation_app" {
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update",
+      "sudo apt update -y",
       "sudo apt install docker.io -y",
 
       # Stop old containers if running
@@ -24,7 +24,7 @@ resource "null_resource" "deploy_blood_donation_app" {
     connection {
       type        = "ssh"
       user        = "ubuntu"
-      private_key = file("${path.module}/vserver.pem")  # <-- PEM must be in the same folder as main.tf
+      private_key = file("/var/lib/jenkins/.ssh/vserver.pem")  # <-- PEM location on Jenkins server
       host        = "15.206.66.58"
     }
   }
