@@ -4,34 +4,83 @@
   become: yes
 
   vars:
-    # Ports
     backend_port: 4000
     frontend_port: 3000
     mongo_port: 27017
 
-    # Docker images
     backend_image: "viduni2023/project-backend:latest"
     frontend_image: "viduni2023/project-frontend:latest"
 
-    # Container names
     mongo_container: "blood_donation_db"
     backend_container: "backend_c"
     frontend_container: "frontend_c"
 
-    # App environment
     session_secret: "Viduni@2026#"
     mongo_uri: "mongodb://{{ mongo_container }}:27017/blood_donation"
 
   tasks:
 
+    # ---------------- SYSTEM PREP ----------------
     - name: Update apt cache
       apt:
         update_cache: yes
 
-    - name: Install Docker
+    # ---------------- REMOVE CONFLICTS ----------------
+    - name: Remove old Docker packages (fix containerd conflict)
       apt:
-        name: docker.io
+        name:
+          - docker
+          - docker-engine
+          - docker.io
+          - containerd
+          - runc
+        state: absent
+        purge: yes
+      ignore_errors: yes
+
+    # ---------------- PREREQUISITES ----------------
+    - name: Install Docker prerequisites
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
         state: present
+        update_cache: yes
+
+    # ---------------- DOCKER OFFICIAL REPO ----------------
+    - name: Create keyrings directory
+      file:
+        path: /usr/share/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Add Docker official GPG key
+      shell: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+        | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      args:
+        creates: /usr/share/keyrings/docker-archive-keyring.gpg
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: >
+          deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
+          https://download.docker.com/linux/ubuntu
+          {{ ansible_lsb.codename }} stable
+        state: present
+        filename: docker
+
+    # ---------------- INSTALL DOCKER ----------------
+    - name: Install Docker Engine
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+        update_cache: yes
 
     - name: Start and enable Docker
       systemd:
@@ -39,12 +88,13 @@
         state: started
         enabled: yes
 
-    - name: Add ubuntu to docker group
+    - name: Add ubuntu user to docker group
       user:
         name: ubuntu
         groups: docker
         append: yes
 
+    # ---------------- CLEAN OLD CONTAINERS ----------------
     - name: Stop old containers
       shell: docker stop {{ mongo_container }} {{ backend_container }} {{ frontend_container }} || true
       ignore_errors: yes
@@ -53,11 +103,13 @@
       shell: docker rm {{ mongo_container }} {{ backend_container }} {{ frontend_container }} || true
       ignore_errors: yes
 
+    # ---------------- DEPLOY CONTAINERS ----------------
     - name: Deploy MongoDB
       docker_container:
         name: "{{ mongo_container }}"
         image: mongo:6.0
         state: started
+        restart_policy: always
         ports:
           - "{{ mongo_port }}:27017"
 
@@ -66,20 +118,18 @@
         name: "{{ backend_container }}"
         image: "{{ backend_image }}"
         state: started
+        restart_policy: always
         ports:
           - "{{ backend_port }}:4000"
         env:
           MONGO_URI: "{{ mongo_uri }}"
           SESSION_SECRET: "{{ session_secret }}"
-        links:
-          - "{{ mongo_container }}:mongo"
 
     - name: Deploy Frontend
       docker_container:
         name: "{{ frontend_container }}"
         image: "{{ frontend_image }}"
         state: started
+        restart_policy: always
         ports:
           - "{{ frontend_port }}:3000"
-        links:
-          - "{{ backend_container }}:backend"
