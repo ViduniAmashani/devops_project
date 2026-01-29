@@ -18,9 +18,10 @@ pipeline {
             }
         }
 
+        // Terraform Stages
         stage('Terraform Init') {
             steps {
-                dir('.') { // Run Terraform in project root
+                dir('terraform') { // Run Terraform in terraform folder
                     sh 'terraform init'
                 }
             }
@@ -28,7 +29,7 @@ pipeline {
 
         stage('Terraform Validate') {
             steps {
-                dir('.') { // Run Terraform in project root
+                dir('terraform') {
                     sh 'terraform validate'
                 }
             }
@@ -36,12 +37,13 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir('.') { // Run Terraform in project root
+                dir('terraform') {
                     sh 'terraform apply -auto-approve'
                 }
             }
         }
 
+        // Docker Stages
         stage('Build Docker Images') {
             steps {
                 sh 'chmod +x scripts/build.sh'
