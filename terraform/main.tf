@@ -16,7 +16,7 @@ resource "null_resource" "deploy_blood_donation_app" {
       type        = "ssh"
       user        = "ubuntu"
       private_key = file("/var/lib/jenkins/.ssh/vserver.pem")  # <-- PEM location on Jenkins server
-      host        = "15.206.66.58"
+      host        = "15.206.158.47"
     }
   }
 }
