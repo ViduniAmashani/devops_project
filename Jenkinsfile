@@ -56,12 +56,12 @@ pipeline {
             }
         }
 
-        stage('Deploy Containers') {
-    steps {
-        // Run your Ansible playbook
-        sh 'ansible-playbook -i ansible/inventory.ini ansible/deploy.yml'
+       stage('Deploy Containers') {
+    withCredentials([file(credentialsId: 'VSERVER_KEY', variable: 'VSERVER_KEY_PATH')]) {
+        sh "ansible-playbook -i ansible/inventory.ini ansible/deploy.yml --private-key $VSERVER_KEY_PATH"
     }
 }
+
     }
 
     post {
