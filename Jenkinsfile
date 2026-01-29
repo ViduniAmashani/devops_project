@@ -58,13 +58,17 @@ pipeline {
 
       stage('Deploy Containers') {
    steps {
-        sh """
-            ansible-playbook \
-            -i ansible/inventory.ini \
-            ansible/deploy.yml \
-            -u ubuntu \
-            -e 'ansible_python_interpreter=/usr/bin/python3'
-        """
+        steps {
+        withCredentials([file(credentialsId: 'VSERVER_KEY', variable: 'VSERVER_KEY_PATH')]) {
+            sh """
+                ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook \
+                -i ansible/inventory.ini \
+                ansible/deploy.yml \
+                -u ubuntu \
+                --private-key $VSERVER_KEY_PATH \
+                -e 'ansible_python_interpreter=/usr/bin/python3'
+            """
+        }
     }
 }
 
