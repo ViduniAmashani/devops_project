@@ -55,22 +55,20 @@ pipeline {
             }
         }
 
-        stage('Deploy Containers') {
-            steps steps {
-        withCredentials([file(credentialsId: 'VSERVER_KEY', variable: 'VSERVER_KEY_PATH')]) {
-            sh """
-              chmod 400 $VSERVER_KEY_PATH
-              export ANSIBLE_HOST_KEY_CHECKING=False
-              ansible-playbook \
-                -i ansible/inventory.ini \
-                ansible/deploy.yml \
-                -u ubuntu \
-                --private-key $VSERVER_KEY_PATH \
-                -e ansible_python_interpreter=/usr/bin/python3
-            """
-        }
-    }
+        // Ansible deployment stage
+        stage('Ansible Deploy') {
+            steps {
+                
+                sh 'sudo apt-get update && sudo apt-get install -y ansible'
 
+                
+                dir("${WORKSPACE}") {
+                    sh """
+                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yml \
+                    --private-key $ANSIBLE_KEY -u ubuntu -v
+                    """
+                }
+            }
         }
 
     } // end stages
