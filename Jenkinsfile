@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         DOCKER_USER = credentials('dockerhub-creds')
-
         AWS_ACCESS_KEY_ID     = credentials('aws-access-key')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-key')
         AWS_DEFAULT_REGION    = "ap-south-1"
@@ -20,7 +19,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('terraform') {   // <-- run in terraform folder
+                dir('terraform') {
                     sh 'terraform init'
                 }
             }
@@ -56,24 +55,22 @@ pipeline {
             }
         }
 
-      stage('Deploy Containers') {
-   steps {
-        steps {
-        withCredentials([file(credentialsId: 'VSERVER_KEY', variable: 'VSERVER_KEY_PATH')]) {
-            sh """
-                ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook \
-                -i ansible/inventory.ini \
-                ansible/deploy.yml \
-                -u ubuntu \
-                --private-key $VSERVER_KEY_PATH \
-                -e 'ansible_python_interpreter=/usr/bin/python3'
-            """
+        stage('Deploy Containers') {
+            steps {
+                withCredentials([file(credentialsId: 'VSERVER_KEY', variable: 'VSERVER_KEY_PATH')]) {
+                    sh """
+                        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook \
+                        -i ansible/inventory.ini \
+                        ansible/deploy.yml \
+                        -u ubuntu \
+                        --private-key \$VSERVER_KEY_PATH \
+                        -e 'ansible_python_interpreter=/usr/bin/python3'
+                    """
+                }
+            }
         }
-    }
-}
 
-
-    }
+    } // end stages
 
     post {
         success {
@@ -83,4 +80,4 @@ pipeline {
             echo "❌ Pipeline failed. Check console logs."
         }
     }
-}
+} // end pipeline
