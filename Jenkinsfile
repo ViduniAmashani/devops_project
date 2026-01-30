@@ -57,13 +57,24 @@ pipeline {
 
         stage('Deploy Containers') {
     steps {
-        sh '''
-          export ANSIBLE_HOST_KEY_CHECKING=False
-          ansible-playbook \
-            -i ansible/inventory.ini \
-            ansible/deploy.yml \
-            -e ansible_python_interpreter=/usr/bin/python3
-        '''
+        withCredentials([
+            sshUserPrivateKey(
+                credentialsId: 'VSERVER_KEY',
+                keyFileVariable: 'SSH_KEY'
+            )
+        ]) {
+            sh '''
+              export ANSIBLE_HOST_KEY_CHECKING=False
+              chmod 600 $SSH_KEY
+
+              ansible-playbook \
+                -i ansible/inventory.ini \
+                ansible/deploy.yml \
+                -u ubuntu \
+                --private-key $SSH_KEY \
+                -e ansible_python_interpreter=/usr/bin/python3
+            '''
+        }
     }
 }
 
