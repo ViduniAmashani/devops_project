@@ -62,8 +62,6 @@ pipeline {
           ansible-playbook \
             -i ansible/inventory.ini \
             ansible/deploy.yml \
-            -u ubuntu \
-            --private-key $VSERVER_KEY_PATH \
             -e ansible_python_interpreter=/usr/bin/python3
         '''
     }
