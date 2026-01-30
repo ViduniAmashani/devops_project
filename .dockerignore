@@ -1,0 +1,78 @@
+# ===============================
+# Node.js (Frontend & Backend)
+# ===============================
+**/node_modules
+**/npm-debug.log
+**/yarn.lock
+**/.npm
+**/.cache
+
+# ===============================
+# Environment & Secrets
+# ===============================
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+
+# ===============================
+# Git & CI
+# ===============================
+.git
+.gitignore
+.github
+.gitlab
+.jenkins
+Jenkinsfile
+
+# ===============================
+# Docker files
+# ===============================
+docker-compose.yml
+docker-compose.*.yml
+
+# ===============================
+# Build outputs
+# ===============================
+**/build
+**/dist
+**/out
+coverage
+
+# ===============================
+# Terraform
+# ===============================
+terraform/.terraform
+terraform/.terraform.lock.hcl
+terraform/*.tfstate
+terraform/*.tfstate.backup
+
+# ===============================
+# Ansible
+# ===============================
+ansible/*.retry
+ansible/logs
+
+# ===============================
+# Logs
+# ===============================
+logs
+**/*.log
+
+# ===============================
+# OS / Editor junk
+# ===============================
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+
+# ===============================
+# Temporary files
+# ===============================
+tmp
+temp
+*.swp
+*.swo
