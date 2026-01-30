@@ -58,10 +58,7 @@ pipeline {
         stage('Deploy Containers') {
     steps {
         withCredentials([
-            sshUserPrivateKey(
-                credentialsId: 'VSERVER_KEY',
-                keyFileVariable: 'SSH_KEY'
-            )
+            file(credentialsId: 'VSERVER_KEY', variable: 'SSH_KEY')
         ]) {
             sh '''
               export ANSIBLE_HOST_KEY_CHECKING=False
