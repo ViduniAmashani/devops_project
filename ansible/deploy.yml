@@ -43,22 +43,20 @@
           - ca-certificates
           - curl
           - gnupg
-          - lsb-release
+        state: present
+        update_cache: yes
+
+    # ---------------- DOCKER INSTALL (FIXED) ----------------
+    - name: Add Docker GPG key (SAFE)
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
-    # ---------------- DOCKER INSTALL ----------------
-    - name: Add Docker GPG key
-      shell: |
-        mkdir -p /etc/apt/keyrings
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-        gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-
-    - name: Add Docker repository
-      shell: |
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-        https://download.docker.com/linux/ubuntu \
-        $(lsb_release -cs) stable" | \
-        tee /etc/apt/sources.list.d/docker.list
+    - name: Add Docker repository (SAFE)
+      apt_repository:
+        repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+        state: present
+        filename: docker
 
     - name: Update apt cache after Docker repo
       apt:
@@ -70,8 +68,6 @@
           - docker-ce
           - docker-ce-cli
           - containerd.io
-          - docker-buildx-plugin
-          - docker-compose-plugin
         state: present
 
     - name: Start and enable Docker
