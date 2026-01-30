@@ -16,7 +16,7 @@
     frontend_container: "frontend_c"
 
     session_secret: "Viduni@2026#"
-    mongo_uri: "mongodb://mongo:27017/blood_donation"
+    mongo_uri: "mongodb://{{ mongo_container }}:27017/blood_donation"
 
   tasks:
 
@@ -55,13 +55,12 @@
 
     - name: Add Docker repository
       shell: |
-        echo \
-        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
         https://download.docker.com/linux/ubuntu \
         $(lsb_release -cs) stable" | \
         tee /etc/apt/sources.list.d/docker.list
 
-    - name: Update apt cache after adding Docker repo
+    - name: Update apt cache after Docker repo
       apt:
         update_cache: yes
 
