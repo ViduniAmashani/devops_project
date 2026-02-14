@@ -33,7 +33,7 @@ function Home() {
 
       {/* Hero Section */}
       <div className="hero-section">
-        <h2 className="did-you-know">DID YOU KNOW?</h2>
+        <h2 className="did-you-know">DO YOU KNOW?</h2>
         <img src="/home_image.png" alt="Blood Donation" className="hero-img" />
         <h3 className="donation-text">
           One blood donation <br /> <span>could save up to three lives</span>

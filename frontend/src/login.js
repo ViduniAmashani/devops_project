@@ -12,7 +12,7 @@ function Login() {
     const password = e.target.password.value;
 
     try {
-      const response = await fetch("http://localhost:4000/api/auth/login", {
+      const response = await fetch("http://3.110.214.84:4000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
@@ -97,3 +97,4 @@ function Login() {
 }
 
 export default Login;
+//end of file
