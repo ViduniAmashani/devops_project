@@ -77,7 +77,7 @@ function Login() {
               type="password"
               id="password"
               name="password"
-              placeholder="Enter your password"
+              placeholder="Enter your password here"
               required
             />
 
