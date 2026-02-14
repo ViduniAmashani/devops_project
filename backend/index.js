@@ -3,14 +3,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-const authRoutes = require('./routes/auth'); // make sure you have this file
+const authRoutes = require('./routes/auth'); 
 const donateRoutes = require('./routes/donate');
 const profileRoutes = require('./routes/profile');
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// === CORS Middleware ===
+// Allow requests only from your frontend EC2 public IP
+app.use(cors({
+  origin: 'http://3.110.214.84:3000', // <-- change to your frontend URL
+  credentials: true
+}));
+
+// Other middleware
 app.use(express.json());
 
 // Routes
@@ -37,4 +43,3 @@ mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     console.error('❌ MongoDB connection failed:', err);
     process.exit(1);
   });
-//end of file 
