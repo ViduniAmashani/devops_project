@@ -27,7 +27,7 @@ function Register() {
     email = email.trim().toLowerCase();
 
     try {
-      const res = await fetch("http://localhost:4000/api/auth/register", { 
+      const res = await fetch("http://3.110.214.84:4000/api/auth/register", { 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, password, email }),
