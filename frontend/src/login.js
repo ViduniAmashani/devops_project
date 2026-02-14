@@ -66,7 +66,7 @@ function Login() {
               type="email"
               id="email"
               name="email"
-              placeholder="Enter your emails"
+              placeholder="Enter your email"
               required
             />
 
