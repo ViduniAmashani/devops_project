@@ -53,8 +53,8 @@ function Login() {
       {/* Overlay Content */}
       <div className="overlay">
         <h1 className="title">
-          Blood Bank & Management <br />
-          <span>User Login Portal</span>
+          Viduni Amashani <br />
+          <span>Marasingha</span>
         </h1>
 
         <div className="login-box">
